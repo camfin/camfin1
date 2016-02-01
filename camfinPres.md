@@ -8,13 +8,18 @@ height: 900
 Project Details
 ========================================================
 
-Consists of a Shiny application to filter campaign finance data from the FEC (Federal Election Committee)
+Consists of a Shiny application to filter campaign finance data from the FEC (Federal Election Committee).
 
-Data is from the 2015-2016 election cycle through December 2015
+Data is from the 2015-2016 election cycle through December 2015.
 
-URL of Shiny app: https://camfin.shinyapps.io/camfin/ 
+User can select to display any of 11 variables (shown on next page), filter on the contents of any of the first 8,
+and sort on any of the last 3.
 
-URL of Git-hub:
+Usage instructions can be seen by clicking on Usage tab.
+
+URL of Shiny app: https://camfin.shinyapps.io/camfin1/ 
+
+URL of Git-hub: https://github.com/camfin/camfin1
 
 Variables
 ========================================================

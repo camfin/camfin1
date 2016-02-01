@@ -50,6 +50,11 @@ shinyServer(
             if (nprty       > 0) xx <- xx[grep(iprty,       xx$PRTY),]
             if (ncandidate  > 0) xx <- xx[grep(icandidate,  xx$CANDIDATE),]
             if (noccupation > 0) xx <- xx[grep(ioccupation, xx$OCCUPATION),]
+            print(input$xsort)
+            if (input$xsort == "LAST_DATE (ASC)")  xx <- xx[order(as.Date(xx$LAST_DATE)),]
+            if (input$xsort == "LAST_DATE (DESC)") xx <- xx[rev(order(as.Date(xx$LAST_DATE))),]
+            if (input$xsort == "TOTAL_CONTRIB")    xx <- xx[order(-xx$TOTAL_CONTRIB),]
+            if (input$xsort == "N_CONTRIB")        xx <- xx[order(-xx$N_CONTRIB),]
             itotrows <- as.integer(input$totrows)
             if (nrow(xx) > itotrows) xx <- head(xx, n = itotrows)
             
@@ -61,7 +66,7 @@ shinyServer(
             xx$TOTAL_CONTRIB <- format(xx$TOTAL_CONTRIB, big.mark=",",scientific=FALSE)
             if (nrow(xx) > 0) row.names(xx) <- 1:nrow(xx)
             options(width = input$totwidth)
-            xx <- subset(xx, select = input$xgrp1)
+            xx <- subset(xx, select = input$xshow)
             print(xx)
         }) }
 )
