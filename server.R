@@ -51,10 +51,10 @@ shinyServer(
             if (ncandidate  > 0) xx <- xx[grep(icandidate,  xx$CANDIDATE),]
             if (noccupation > 0) xx <- xx[grep(ioccupation, xx$OCCUPATION),]
             print(input$xsort)
-            if (input$xsort == "LAST_DATE (ASC)")  xx <- xx[order(as.Date(xx$LAST_DATE)),]
-            if (input$xsort == "LAST_DATE (DESC)") xx <- xx[rev(order(as.Date(xx$LAST_DATE))),]
+            if (input$xsort == "LAST_DATE (ASC)")  xx <- xx[order(as.Date(xx$LAST_DATE), -xx$TOTAL_CONTRIB),]
+            if (input$xsort == "LAST_DATE (DESC)") xx <- xx[rev(order(as.Date(xx$LAST_DATE), xx$TOTAL_CONTRIB)),]
             if (input$xsort == "TOTAL_CONTRIB")    xx <- xx[order(-xx$TOTAL_CONTRIB),]
-            if (input$xsort == "N_CONTRIB")        xx <- xx[order(-xx$N_CONTRIB),]
+            if (input$xsort == "N_CONTRIB")        xx <- xx[order(-xx$N_CONTRIB, -xx$TOTAL_CONTRIB),]
             itotrows <- as.integer(input$totrows)
             if (nrow(xx) > itotrows) xx <- head(xx, n = itotrows)
             
