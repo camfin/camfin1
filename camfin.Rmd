@@ -1,7 +1,7 @@
 Usage
 =====
 
-### Data Characteristics ###
+### 1. Data Characteristics ###
 
 This application filters Federal Election Commission (FEC) data for the 2015-2016 election cycle as specified by the user.  Following are the available fields:
 
@@ -36,7 +36,7 @@ The NAME field has been standarized from the original FEC data via the following
 For example, Michael Bloomberg's name is listed in the FEC data as "BLOOMBERG, MICHAEL", "BLOOMBERG, MICHAEL R", and "BLOOMBERG, MICHAEL R.".  All three are standarized
 to "BLOOMBERG, MICHAEL".
 
-### Output from Default Selections ###
+### 2. Output from Default Selections ###
 
 Following are the first 33 rows that are displayed as a result of the default selections:
 
@@ -46,8 +46,10 @@ Following are the first 33 rows that are displayed as a result of the default se
 [1] "CAMPAIGN FINANCE CONTRIBUTIONS FOR 2015-2016 ELECTION CYCLE THROUGH DECEMBER 2015"
 [1] "(grouped by name, city, state, employer, and cmte_nm, sorted by total_contrib)"
 [1] ""
-[1] 34619
-[1] "900"
+[1] "SUM(TOTAL_CONTRIB) = 78,548,042"
+[1] "SUM(N_CONTRIB)     = 40,039"
+[1] "NUMBER OF ROWS     = 34,619"
+[1] ""
                                         NAME               CITY STATE               CMTE_NM PRTY    CANDIDATE  LAST_DATE TOTAL_CONTRIB N_CONTRIB
 1                           SANDLER, HERBERT      SAN FRANCISCO    CA PRIORITIES USA ACTION    D      CLINTON 2015-06-24     1,000,000         1
 2                          FAIR SHARE ACTION             DENVER    CO PRIORITIES USA ACTION    D      CLINTON 2015-06-29     1,000,000         1
@@ -88,7 +90,9 @@ The rows are always sorted in descending order by TOTAL_CONTRIB.  As can be seen
 listed.  Note that this includes three rows where CANDIDATE is ANTI-CLINTON.  As to be expected, these three rows have PRTY equal to R,
 indicating the Republican Party.
 
-### Use of Search Boxes and Regex ###
+Also, note that the pattern(s) being searched for (CANDIDATE for CLINTON in this case) are listed at the top of the page.  Also, following the title is listed the sums of TOTAL_CONTRIB and N_CONTRIB and the number of rows.  The number of rows and the totals are for all rows that matched the given patterns, not just for the number of rows specified by the Maximum Total Rows option mentioned in section 6.  This option is used just to limit the display and speed up processing. 
+
+### 3. Use of Search Boxes and Regex ###
 
 The searches use the function grep which in turn uses regex expressions as described <A HREF="https://stat.ethz.ch/R-manual/R-devel/library/base/html/regex.html">here</A>.
 In regex expressions, the characters ^ and $ indicate the beginning and end of a line, respectively.  Hence, adding a caret ^ immediately before CLINTON in the
@@ -121,7 +125,23 @@ specifies that the first letter of the first name can be B, G, or J and the seco
 do this filtering using regex.  In any case, BUSH, GEORGE PRESCOTT appears to be unrelated to the Bush family and can be filtered out
 by putting TX in the STATE search box.
 
-### Use of Checkboxes ###
+### 4. Use of Sort Radio Buttons ###
+
+Below the search boxes are 4 radio buttons for sorting the data by LAST_DATE in ascending order, LAST_DATE in descending order, TOTAL_CONTRIB in descending order, and N_CONTRIB in descending order.  For equal values, a secondary descending sort is done on TOTAL_CONTRIB.  This sorting helps to examine the data at the maximum (and minimum in the case of LAST_DATE) values of these fields.  For example, selecting to sort by LAST_DATE (ASC) with no values in any search boxes reveals 8 groups of contributions to the STUTZMAN for SENATE committee on 2011-07-14, one contribution on 2013-11-22, and many other contributions starting on the first day of 2014.  Sorting by LAST_DATE (DSC) reveals that there are 73 contribution groups with <NA> (missing data) for LAST_DATE, followed by the following four dates:
+
+```
+                                        NAME                   CITY STATE                                  CMTE_NM PRTY        CANDIDATE  LAST_DATE TOTAL_CONTRIB N_CONTRIB
+74                         MARTIN, ELIZABETH             PITTSBURGH    PA                                     DSCC    D                  2025-08-05           276         6
+75                           BERZOK, MATTHEW               BETHESDA    MD                       KAINE FOR VIRGINIA    D            KAINE 2016-07-26           500         1
+76                         CALLAHAN, MICHAEL               MONTREAL    ZZ                AMERICANS SOCIALLY UNITED                       2016-03-31        19,450         1
+77                      WILLIAMSON, MARIANNE         WEST HOLLYWOOD    CA         MARIANNE WILLIAMSON FOR CONGRESS            WILLIAMSON 2015-12-31       259,533         6
+```
+
+The 73 <NA>'s may indicate that the dates were not entered or were invalid.  The three lines following these, having dates in the future, are likely errors.  The third line for the AMERICANS SOCIALLY UNITED committee is especially interesting.  A story at <A HREF="http://www.publicintegrity.org/2015/09/10/17947/did-shady-pro-bernie-sanders-super-pac-just-dupe-james-bond">this link</A> indicates that this is a "purportedly pro-Bernie Sanders super PAC", "led by Cary Lee Peterson — a man who’s routinely run afoul of creditors and the law".  The article states that "Sanders himself has disvowed super PACs" but that actor Daniel Craig, who plays James Bond, gave nearly $50,000 to this super PAC.  A major problem is that super PACs are largely unregulated by the Federal Election Commission.
+
+In any event, the fourth line and those immediately following it are for the last day of 2015.  However, if the last name of each of the major candidates (CLINTON, O'MALLEY, SANDERS, BUSH, CARSON, CHRISTIE, CRUZ, FIORINA, KASICH, RUBIO, TRUMP, SANTORUM, PAUL, HUCKABEE, PATAKI, GRAHAM, JINDAL, WALKER, and PERRY) are entered into the CANDIDATE search box, it can be seen that all except TRUMP and PAUL currently have no contributions after 2015-9-30.  This appears to be because the file containing contributions by individuals on the <A HREF="http://www.fec.gov/finance/disclosure/ftpdet.shtml#a2015_2016">FEC site</A> is dated 31-JAN-2016 at the time that I write this and much of the individual data through the end of 2015, which is due on 31-JAN-2016, is likely still being cleaned and processed and has not yet been uploaded to the site.  In any case, this shows another useful function of the sort radio buttons.
+
+### 5. Use of Checkboxes ###
 
 Following is a search for the contributions of Larry Ellison, the Chairman and CTO of Oracle using the default checkbox selections:
 
@@ -160,7 +180,7 @@ the last two lines to have been missed.
 
 By the way, the above data shows a weakness in the data.  To my knowledge, the FEC data lists the party and candidate for the primary committee of each candidate but not for the so-called super PACs.  For super PACs, this data is obtained from a list compiled by OpenSecrets.org at <A HREF="https://www.opensecrets.org/pacs/superpacs.php?cycle=2016">this link</A>.  However, the Hatch Victory Committee is not listed here, possibly because it is a joint fundraising committee whose funds do not go only to Senator Hatch.  However, <A HREF="http://www.opensecrets.org/jfc/summary.php?id=C00542886">this link</A> shows that the funds all go to Republicans.
 
-### Use of Other Options ###
+### 6. Use of Other Options ###
 
 The remaining options are the Maximum Column Width, Maximum Total Width, and Maximum Total Rows.  The following shows the effect of a Maximum Column Width of 10 on the prior example:
 
@@ -221,7 +241,7 @@ Finally, the following shows the effect of a Maximum Total Rows of 4 (with Maxim
 
 As can be seen, the number of rows is simply truncated to 4.
 
-### Other Example Queries ###
+### 7. Other Example Queries ###
 
 The following shows the contributions of Donald Trump in the 2015-2016 campaign cycle through December 2015:
 
